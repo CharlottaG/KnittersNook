@@ -28,3 +28,10 @@ footer {
     padding: 10px 0;
     text-align: center; 
 }
+
+.btn-delete {
+    color: #fff;
+    background: #E84610;
+}
+
+
