@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- pattern_details.html content starts here -->
+
+<div class="container">
+  <h1>{{pattern.pattern_name}} | by {{pattern.created_by}}</h1>
+  <p>Difficulity level:<em> {{pattern.difficulity_level}}</em></p>
+
+  <img class="card-img-top" src="{% static 'images/default.jpg' %}"
+    alt="placeholder image" width="200" height="400" crop="fill">
+
+  <div class="container">
+    <dl class="row">
+      <dt class="col-sm-3">Needle size</dt>
+      <dd class="col-sm-9">{{pattern.needle_size}}</dd>
+    
+      <dt class="col-sm-3">Yarn</dt>
+      <dd class="col-sm-9"><p>{{pattern.yarn}}</p>
+      </dd>
+    
+      <dt class="col-sm-3">Gauge</dt>
+      <dd class="col-sm-9">{{pattern.gauge}}</dd>
+    
+      <dt class="col-sm-3 text-truncate">Pattern</dt>
+      <dd class="col-sm-9">{{pattern.instructions}}</dd>
+    
+      </dd>
+    </dl>
+
+  </div>
+  
+  <!--Display comments-->
+
+  
+
+<!-- pattern_details.html content ends here -->
+{% endblock %}

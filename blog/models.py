@@ -19,6 +19,7 @@ class Pattern(models.Model):
     gauge = models.CharField(max_length=50)
     yarn = models.CharField(max_length=50, default="yarn")
     difficulity_level = models.IntegerField(choices=LEVEL,)
+    pattern_pdf = CloudinaryField('pdf', default='placeholder')
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
     updated_on = models.DateTimeField(auto_now=True)
@@ -29,3 +30,18 @@ class Pattern(models.Model):
 
     def __str__(self):
         return f"{self.pattern_name} | by {self.created_by}"
+
+
+class Comment(models.Model):
+    pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
+    body = models.TextField()
+    approved = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["created_on"]
+
+    def __str__(self):
+        return f"Comment: {self.body} | by {self.author}"
+
