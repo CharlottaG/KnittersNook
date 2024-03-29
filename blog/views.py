@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
@@ -14,10 +15,6 @@ class HomePage(TemplateView):
     template_name = "blog/index.html"
 
 
-class Profile(TemplateView):
-    template_name = "blog/user_profile.html"
-
-
 class PatternList(generic.ListView):
     queryset = Pattern.objects.filter(status=1)
     template_name = "blog/pattern_list.html"
@@ -25,6 +22,18 @@ class PatternList(generic.ListView):
 
 
 def pattern_details(request, slug):
+    """
+    Display an individual :model:`blog.Pattern`.
+
+    **Context**
+
+    ``pattern``
+        An instance of :model:`blog.Pattern`.
+
+    **Template:**
+
+    :template:`blog/pattern_details.html`
+    """
     queryset = Pattern.objects.filter(status=1)
     pattern = get_object_or_404(queryset, slug=slug)
     comments = pattern.comments.all().order_by("-created_on")
@@ -37,10 +46,10 @@ def pattern_details(request, slug):
             comment.pattern = pattern
             comment.save()
             messages.add_message(
-            request, messages.SUCCESS,
-            'Comment submitted'
-    )
-
+                request, messages.SUCCESS,
+                'Comment submitted and awaiting approval'
+            )
+    
     comment_form = CommentForm()
 
     return render(
@@ -50,7 +59,7 @@ def pattern_details(request, slug):
             "pattern": pattern,
             "comments": comments,
             "comment_count": comment_count,
-            "comment_form": comment_form,
+            "comment_form": comment_form
         },
     )
 
@@ -73,7 +82,8 @@ def comment_edit(request, slug, comment_id):
             comment.save()
             messages.add_message(request, messages.SUCCESS, 'Comment Updated!')
         else:
-            messages.add_message(request, messages.ERROR, 'Error updating comment!')
+            messages.add_message(request, messages.ERROR,
+                                 'Error updating comment!')
 
     return HttpResponseRedirect(reverse('pattern_details', args=[slug]))
 
@@ -82,14 +92,16 @@ def comment_delete(request, slug, comment_id):
     """
     view to delete comment
     """
-    queryset = Post.objects.filter(status=1)
-    post = get_object_or_404(queryset, slug=slug)
+    queryset = Pattern.objects.filter(status=1)
+    pattern = get_object_or_404(queryset, slug=slug)
     comment = get_object_or_404(Comment, pk=comment_id)
 
     if comment.author == request.user:
         comment.delete()
         messages.add_message(request, messages.SUCCESS, 'Comment deleted!')
     else:
-        messages.add_message(request, messages.ERROR, 'You can only delete your own comments!')
+        messages.add_message(request, messages.ERROR,
+                             'You can only delete your own comments!')
 
-    return HttpResponseRedirect(reverse('post_detail', args=[slug]))
+    return HttpResponseRedirect(reverse('pattern_details', args=[slug]))
+
