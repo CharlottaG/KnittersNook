@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
@@ -19,6 +18,17 @@ class PatternList(generic.ListView):
     queryset = Pattern.objects.filter(status=1)
     template_name = "blog/pattern_list.html"
     paginate_by = 6
+
+
+def add_pattern(request):
+    if request.method == 'POST':
+        form = PatternForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()  
+            return redirect('pattern_list')
+    else:
+        form = PatternForm()
+    return render(request, 'add_pattern.html', {'form': form})
 
 
 def pattern_details(request, slug):
@@ -71,13 +81,13 @@ def comment_edit(request, slug, comment_id):
     if request.method == "POST":
 
         queryset = Pattern.objects.filter(status=1)
-        pattern = get_object_or_404(queryset, slug=slug)
+        post = get_object_or_404(queryset, slug=slug)
         comment = get_object_or_404(Comment, pk=comment_id)
         comment_form = CommentForm(data=request.POST, instance=comment)
 
         if comment_form.is_valid() and comment.author == request.user:
             comment = comment_form.save(commit=False)
-            comment.pattern = pattern
+            comment.post = post
             comment.approved = False
             comment.save()
             messages.add_message(request, messages.SUCCESS, 'Comment Updated!')
@@ -93,7 +103,7 @@ def comment_delete(request, slug, comment_id):
     view to delete comment
     """
     queryset = Pattern.objects.filter(status=1)
-    pattern = get_object_or_404(queryset, slug=slug)
+    post = get_object_or_404(queryset, slug=slug)
     comment = get_object_or_404(Comment, pk=comment_id)
 
     if comment.author == request.user:

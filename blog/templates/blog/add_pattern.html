@@ -1,0 +1,17 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- add_pattern.html content starts here -->
+
+  <h2>Add Pattern</h2>
+  <p>Posting as: {{ user.username }}</p>
+  <form id="patternForm" method="post" style="margin-top: 1.3em;">
+    {{ pattern_form | crispy }}
+    {% csrf_token %}
+    <button id="submitButton" type="submit" class="btn btn-success btn-sm">Submit</button>
+  </form>
+
+<!-- add_pattern.html content ends here -->
+{% endblock %}

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block content %}
 
+{% block content %}
 
 <!-- pattern_details.html content starts here -->
 <div class="container px-4 py-5 cols-2">
+  <a href="{% url 'add_pattern' %}" class="btn btn-primary">Add Pattern</a>
   <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-4">
@@ -51,8 +52,6 @@
       <div class="col-md-8 mb-4  mt-3 ">
         <h5>Comments:</h5>
         <div class="card-body">
-          <!-- We want a for loop inside the empty control tags
-            to iterate through each comment in comments -->
           {% for comment in comments %}
           <div class="p-2 comments
             {% if not comment.approved and comment.author == user %}
@@ -88,26 +87,29 @@
 <!-- Delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Delete comment?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel">Delete comment?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              Are you sure you want to delete your comment? This action cannot be undone.
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <a id="deleteConfirm" href="#" class="btn btn-danger">Delete</a>
+          </div>
       </div>
-      <div class="modal-body">
-        Are you sure you want to delete your comment?
-        This action cannot be undone.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <a id="deleteConfirm" href="#" class="btn
-          btn-danger">Delete</a>
-      </div>
-    </div>
   </div>
 </div>
 
-{% endblock %}
+{% endblock content %}
 
 {% block extras %}
 <script src="{% static 'js/comments.js' %}"></script>
 {% endblock %}
+
+
+
+
+
