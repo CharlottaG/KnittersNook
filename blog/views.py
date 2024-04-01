@@ -1,12 +1,11 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.views import generic
 from django.views.generic.detail import DetailView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Pattern, Comment
-from .forms import CommentForm
-
+from .forms import CommentForm, PatternForm
 
 # Create your views here.
 
@@ -18,17 +17,6 @@ class PatternList(generic.ListView):
     queryset = Pattern.objects.filter(status=1)
     template_name = "blog/pattern_list.html"
     paginate_by = 6
-
-
-def add_pattern(request):
-    if request.method == 'POST':
-        form = PatternForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()  
-            return redirect('pattern_list')
-    else:
-        form = PatternForm()
-    return render(request, 'add_pattern.html', {'form': form})
 
 
 def pattern_details(request, slug):
@@ -99,6 +87,7 @@ def comment_edit(request, slug, comment_id):
 
 
 def comment_delete(request, slug, comment_id):
+
     """
     view to delete comment
     """
@@ -115,3 +104,16 @@ def comment_delete(request, slug, comment_id):
 
     return HttpResponseRedirect(reverse('pattern_details', args=[slug]))
 
+
+def add_pattern(request):
+    if request.method == "POST":
+        pattern_form = PatternForm(data=request.POST)
+        if pattern_form.is_valid():
+            pattern = pattern_form.save(commit=False)
+            pattern.created_by = request.user
+            pattern.save() 
+            messages.success(request, 'Pattern added')
+            return redirect('pattern_list')
+    else:
+        pattern_form = PatternForm()
+    return render(request, 'add_pattern.html', {'form': pattern_form})
