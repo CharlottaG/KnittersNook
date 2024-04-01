@@ -5,80 +5,85 @@
 
 
 <!-- pattern_details.html content starts here -->
-
-<div class="container text-center">
-  <div class="row">
-    <div class="col">
-      <img class="card-img-top" src=" {{ pattern.featured_image.url }}" alt="{{ pattern.pattern_name }}">
-    </div>
-    <div class="col">
-      <h2>
-        <h1>{{pattern.pattern_name}} | <small class="text-body-secondary" by {{pattern.created_by}}</small></small></h1>
-        <p>Difficulity level: {{pattern.difficulity_level}} 
-          <br>Needle size:{{pattern.needle_size}}
-          <br>Yarn: {{pattern.yarn}}
-          <br>Gauge: {{pattern.gauge}}
-          <br><a href="{{ pattern.pattern_pdf.url }}">Download PDF</a>
-        </p>
-      </h2>
-    </div>
-    <div class="col">
-      
-<!-- Displaying Comments -->
-<div class="row">
-  <div class="col-md-8 card mb-4  mt-3 ">
-    <h3>Comments:</h3>
-    <div class="card-body">
-      <!-- We want a for loop inside the empty control tags
-            to iterate through each comment in comments -->
-      {% for comment in comments %}
-      <div class="p-2 comments
-            {% if not comment.approved and comment.author == user %}
-            faded{% elif not comment.approved %} d-none{% endif %}">
-        <p class="font-weight-bold">
-          {{ comment.author }}
-          <span class="font-weight-normal">
-            {{ comment.created_on }}
-          </span> wrote:
-        </p>
-        <div id="comment{{ comment.id }}">
-          {{ comment.body | linebreaks }}
+<div class="container px-4 py-5 cols-2">
+  <div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src=" {{ pattern.featured_image.url }}" alt="{{ pattern.pattern_name }}" class="img-fluid rounded-start">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{pattern.pattern_name}} | <small class="text-body-secondary">by
+              {{pattern.created_by}}</small></h5>
+          <p class="card-text">{{pattern.description}}</p>
+          <p class="card-text"><em>Difficulity level:</em> {{pattern.difficulity_level}}
+            <br><em>Needle size:</em> {{pattern.needle_size}}
+            <br><em>Yarn:</em> {{pattern.yarn}}
+            <br><em>Gauge:</em> {{pattern.gauge}}
+          </p>
+          <p class="card-text"><a href="{{ pattern.pattern_pdf.url }}">Download PDF</a></p>
         </div>
-        {% if not comment.approved and comment.author == user %}
-        <p class="approval">
-          This comment is awaiting approval
-        </p>
-        {% endif %}
-        {% if user.is_authenticated and comment.author == user %}
-        <button class="btn btn-edit" comment_id="{{ comment.id }}">Edit</button>
-        <button class="btn btn-delete" comment_id="{{ comment.id }}">Delete</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="border p-3" id="comments">
+    <!-- Creating New Comments -->
+    <div class="col mb-4 mt-3">
+      <div class="card-body">
+        {% if user.is_authenticated %}
+        <h5>Leave a comment:</h5>
+        <p>Posting as: {{ user.username }}</p>
+        <form id="commentForm" method="post" style="margin-top: 1.3em;">
+          {{ comment_form | crispy }}
+          {% csrf_token %}
+          <button id="submitButton" type="submit" class="btn btn-success btn-sm">Submit</button>
+        </form>
+        {% else %}
+        <p>Log in to leave a comment</p>
         {% endif %}
       </div>
-      <!-- Our for loop ends here -->
-      {% endfor %}
+    </div>
+
+    <!-- Displaying Comments -->
+    <div class="row">
+      <div class="col-md-8 mb-4  mt-3 ">
+        <h5>Comments:</h5>
+        <div class="card-body">
+          <!-- We want a for loop inside the empty control tags
+            to iterate through each comment in comments -->
+          {% for comment in comments %}
+          <div class="p-2 comments
+            {% if not comment.approved and comment.author == user %}
+            faded{% elif not comment.approved %} d-none{% endif %}">
+            <p class="font-weight-bold">
+              {{ comment.author }}
+              <span class="font-weight-normal">
+                {{ comment.created_on }}
+              </span> wrote:
+            </p>
+            <div id="comment{{ comment.id }}">
+              {{ comment.body | linebreaks }}
+            </div>
+            {% if not comment.approved and comment.author == user %}
+            <p class="approval">
+              This comment is awaiting approval
+            </p>
+            {% endif %}
+            {% if user.is_authenticated and comment.author == user %}
+            <button class="btn btn-secondary btn-sm btn-edit" comment_id="{{ comment.id }}">Edit</button>
+            <button class="btn  btn-danger btn-sm btn-delete" comment_id="{{ comment.id }}">Delete</button>
+            {% endif %}
+          </div>
+          <!-- Our for loop ends here -->
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Creating New Comments -->
-<div class="col-md-4 card mb-4 mt-3">
-  <div class="card-body">
-    {% if user.is_authenticated %}
-    <h3>Leave a comment:</h3>
-    <p>Posting as: {{ user.username }}</p>
-    <form id="commentForm" method="post" style="margin-top: 1.3em;">
-      {{ comment_form | crispy }}
-      {% csrf_token %}
-      <button id="submitButton" type="submit" class="btn btn-signup btn-lg">Submit</button>
-    </form>
-    {% else %}
-    <p>Log in to leave a comment</p>
-    {% endif %}
-  </div>
-</div>
-    </div>
-  </div>
-</div>
 
 <!-- Delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
