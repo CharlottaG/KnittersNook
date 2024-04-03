@@ -106,14 +106,14 @@ def comment_delete(request, slug, comment_id):
 
 
 def add_pattern(request):
-    if request.method == "POST":
-        pattern_form = PatternForm(data=request.POST)
-        if pattern_form.is_valid():
-            pattern = pattern_form.save(commit=False)
-            pattern.created_by = request.user
-            pattern.save() 
-            messages.success(request, 'Pattern added')
+    if request.method == 'POST':
+        form = PatternForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Pattern added successfully!') 
             return redirect('pattern_list')
+        else:
+            messages.error(request, 'Form submission failed. Please correct the errors.')
     else:
-        pattern_form = PatternForm()
-    return render(request, 'add_pattern.html', {'form': pattern_form})
+        form = PatternForm()
+    return render(request, 'blog/add_pattern.html', {'form': form})

@@ -11,4 +11,4 @@ class CommentForm(forms.ModelForm):
 class PatternForm(forms.ModelForm):
     class Meta:
         model = Pattern
-        fields = ('pattern_name', 'description', 'featured_image', 'difficulity_level', 'needle_size', 'yarn', 'gauge',)
+        fields = ['pattern_name', 'description', 'featured_image', 'difficulity_level', 'needle_size', 'yarn', 'gauge']

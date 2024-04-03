@@ -5,13 +5,22 @@
 
 <!-- add_pattern.html content starts here -->
 
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
   <h2>Add Pattern</h2>
-  <p>Posting as: {{ user.username }}</p>
   <form id="patternForm" method="post" style="margin-top: 1.3em;">
-    {{ pattern_form | crispy }}
-    {% csrf_token %}
-    <button id="submitButton" type="submit" class="btn btn-success btn-sm">Submit</button>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button id="submitButton" type="submit" class="btn btn-primary btn-sm">Submit</button>
   </form>
+
+  
 
 <!-- add_pattern.html content ends here -->
 {% endblock %}
