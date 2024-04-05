@@ -13,3 +13,21 @@ from .models import Profile
 
 class ProfilesList(TemplateView):
     template_name = "profiles/profiles_list.html"
+
+def add_profile(request):
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, request.FILES)
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            messages.success(request, 'Your profile was added successfully!')
+        return redirect('user_profile')
+    else:
+        profile_form = UserProfileForm()
+    return render(request, 'profiles/add_user_profile.html', {'profile_form': profile_form})
+
+
+def user_profile(request):
+    return render(request, 'profiles/user_profile.html')
+
