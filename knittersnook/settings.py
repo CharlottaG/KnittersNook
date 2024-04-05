@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'blog',
     'profiles',
+    'django_extensions',
 ]
 
 SITE_ID = 1

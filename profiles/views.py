@@ -9,26 +9,7 @@ from .models import Profile
 
 # Create your views here.
 
-@login_required
-class ProfilesList(generic.ListView):
-    model = Profile
+# @login_required
+
+class ProfilesList(TemplateView):
     template_name = "profiles/profiles_list.html"
-
-
-def add_user_profile(request):
-    if request.method == 'POST':
-        profile_form = UserProfileForm(request.POST, request.FILES)
-        if profile_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-            messages.success(request, 'Your profile was added successfully!')
-        return redirect('user_profile')
-    else:
-        profile_form = UserProfileForm()
-    return render(request, 'add_user_profile.html', {'profile_form': profile_form})
-
-    from django.shortcuts import render
-
-def user_profile(request):
-    return render(request, 'user_profile.html')
