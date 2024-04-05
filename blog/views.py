@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Pattern, Comment
 from .forms import CommentForm, PatternForm
+from django.forms import ModelForm
+
 
 # Create your views here.
 
@@ -106,14 +108,23 @@ def comment_delete(request, slug, comment_id):
 
 
 def add_pattern(request):
-    if request.method == 'POST':
-        form = PatternForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Pattern added successfully!') 
-            return redirect('pattern_list')
-        else:
-            messages.error(request, 'Form submission failed. Please correct the errors.')
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        print("Received a POST request")
+        # create a form instance and populate it with data from the request:
+        pattern_form = PatternForm(request.POST)
+        # check whether it's valid:
+        if pattern_form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect("/success/")
+
+    # if a GET (or any other method) we'll create a blank form
     else:
-        form = PatternForm()
-    return render(request, 'blog/add_pattern.html', {'form': form})
+        pattern_form = PatternForm()
+
+    return render(request, "blog/add_pattern.html", {'pattern_form': pattern_form}) 
+
+def submission_success(TemplateView):
+    template_name = "blog/submission_success.html"
