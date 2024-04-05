@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_summernote',
     'cloudinary',
     'blog',
+    'profiles',
 ]
 
 SITE_ID = 1
@@ -118,6 +119,7 @@ CLOUDINARY = {
     'api_key': '663763923361872',
     'api_secret': 'evtNL0mvCIay6Z44jbyw7X43hQk'
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

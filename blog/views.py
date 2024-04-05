@@ -16,7 +16,7 @@ class HomePage(TemplateView):
 
 
 class PatternList(generic.ListView):
-    queryset = Pattern.objects.filter(status=1)
+    queryset = Pattern.objects.filter()
     template_name = "blog/pattern_list.html"
     paginate_by = 6
 
@@ -108,23 +108,20 @@ def comment_delete(request, slug, comment_id):
 
 
 def add_pattern(request):
-    # if this is a POST request we need to process the form data
     if request.method == "POST":
-        print("Received a POST request")
-        # create a form instance and populate it with data from the request:
-        pattern_form = PatternForm(request.POST)
-        # check whether it's valid:
+        pattern_form = PatternForm(request.POST, request.FILES)
         if pattern_form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect("/success/")
-
-    # if a GET (or any other method) we'll create a blank form
+            pattern = pattern_form.save(commit=False)
+            pattern.author = request.user
+            pattern.save()
+            messages.success(request, 'Your pattern was added successfully!')
+            return redirect('pattern_details')
     else:
         pattern_form = PatternForm()
+    
+    return render(request, "blog/add_pattern.html", {'pattern_form': pattern_form})
 
-    return render(request, "blog/add_pattern.html", {'pattern_form': pattern_form}) 
+
 
 def submission_success(TemplateView):
     template_name = "blog/submission_success.html"
